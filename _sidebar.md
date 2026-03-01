@@ -1,5 +1,5 @@
-* **英语笔记**
-    * **口语**
-        * [N1 笔记](英语笔记/口语/N1.md)
-    * **语法**
-        * [时态学习](英语笔记/语法/N2.md)
+* **englishnote**
+    * **grammar**
+        * [n2](englishnote/grammar/n2.md)
+    * **speech**
+        * [n1](englishnote/speech/n1.md)
