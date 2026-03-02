@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -15,5 +15,61 @@
     }
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>YingNotes</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { display: flex; margin: 0; font-family: sans-serif; height: 100vh; }
+        /* 左侧菜单栏 */
+        #sidebar { width: 250px; background: #1e1e1e; color: #ccc; padding: 10px; overflow-y: auto; }
+        .menu-item { cursor: pointer; padding: 5px; }
+        .menu-item:hover { background: #333; }
+        .level-1 { font-weight: bold; color: #fff; margin-top: 10px; }
+        .level-2 { padding-left: 15px; font-size: 0.9em; }
+        .level-3 { padding-left: 30px; font-size: 0.85em; color: #4fc3f7; }
+        /* 右侧内容区 */
+        #content { flex: 1; padding: 20px; overflow-y: auto; background: #fff; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="level-1">YINGNOTES</div>
+    <div class="level-2">📁 englishnote</div>
+    
+    <div class="level-2" style="padding-left:30px;">📂 grammar</div>
+    <div class="menu-item level-3" onclick="loadDoc('englishnote/grammar/n2.md')">📄 n2.md</div>
+    
+    <div class="level-2" style="padding-left:30px;">📂 speech</div>
+    <div class="menu-item level-3" onclick="loadDoc('englishnote/speech/n1.md')">📄 n1.md</div>
+</div>
+
+<div id="content">
+    <div id="markdown-body">请选择一个文件查看内容</div>
+</div>
+
+<script>
+    async function loadDoc(filePath) {
+        const contentDiv = document.getElementById('markdown-body');
+        contentDiv.innerHTML = "加载中...";
+        
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) throw new Error('文件不存在');
+            const text = await response.text();
+            // 使用 marked.js 将 md 转为 html
+            contentDiv.innerHTML = marked.parse(text);
+        } catch (err) {
+            contentDiv.innerHTML = "<span style='color:red;'>错误: " + err.message + "</span>";
+        }
+    }
+</script>
+
 </body>
 </html>
