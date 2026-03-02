@@ -1,72 +1,133 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/vue.css">
-</head>
-<body>
-  <div id="app">加载中...</div>
-  <script>
-    window.$docsify = {
-      name: '我的英语笔记',
-      loadSidebar: true,   // 开启侧边栏
-      subMaxLevel: 3,      // 抓取 md 文件内部标题的最大层级
-      auto2top: true
-    }
-  </script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>YingNotes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YingNotes | 个人笔记</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        body { display: flex; margin: 0; font-family: sans-serif; height: 100vh; }
+        :root {
+            --sidebar-bg: #f8f9fa;
+            --sidebar-hover: #e9ecef;
+            --accent-color: #007bff;
+            --text-main: #333;
+            --border-color: #dee2e6;
+        }
+
+        body { display: flex; margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; height: 100vh; color: var(--text-main); }
+
         /* 左侧菜单栏 */
-        #sidebar { width: 250px; background: #1e1e1e; color: #ccc; padding: 10px; overflow-y: auto; }
-        .menu-item { cursor: pointer; padding: 5px; }
-        .menu-item:hover { background: #333; }
-        .level-1 { font-weight: bold; color: #fff; margin-top: 10px; }
-        .level-2 { padding-left: 15px; font-size: 0.9em; }
-        .level-3 { padding-left: 30px; font-size: 0.85em; color: #4fc3f7; }
+        #sidebar { 
+            width: 280px; 
+            background: var(--sidebar-bg); 
+            border-right: 1px solid var(--border-color);
+            padding: 20px 0; 
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .logo { padding: 0 25px 20px; font-size: 1.2rem; font-weight: bold; color: var(--accent-color); border-bottom: 1px solid var(--border-color); margin-bottom: 10px; }
+
+        .folder-header { 
+            padding: 10px 25px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .folder-header:hover { background: var(--sidebar-hover); }
+        
+        /* 旋转箭头指示器 */
+        .arrow { margin-right: 8px; transition: transform 0.2s; font-size: 0.8em; }
+        .collapsed .arrow { transform: rotate(-90deg); }
+
+        /* 子菜单容器 */
+        .submenu { overflow: hidden; transition: max-height 0.3s ease-out; }
+        .collapsed + .submenu { display: none; }
+
+        .file-link { 
+            padding: 8px 25px 8px 45px; 
+            cursor: pointer; 
+            font-size: 0.95em; 
+            color: #555;
+            display: block;
+        }
+        .file-link:hover { background: var(--sidebar-hover); color: var(--accent-color); }
+        .file-link.active { background: #e7f1ff; color: var(--accent-color); border-right: 3px solid var(--accent-color); }
+
         /* 右侧内容区 */
-        #content { flex: 1; padding: 20px; overflow-y: auto; background: #fff; line-height: 1.6; }
+        #content { flex: 1; padding: 40px 60px; overflow-y: auto; background: #fff; }
+        #markdown-body { max-width: 800px; margin: 0 auto; line-height: 1.7; }
+        
+        /* Markdown 样式微调 */
+        #markdown-body h1 { border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
+        #markdown-body code { background: #f3f3f3; padding: 2px 4px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <div id="sidebar">
-    <div class="level-1">YINGNOTES</div>
-    <div class="level-2">📁 englishnote</div>
+    <div class="logo">📘 YINGNOTES</div>
     
-    <div class="level-2" style="padding-left:30px;">📂 grammar</div>
-    <div class="menu-item level-3" onclick="loadDoc('englishnote/grammar/n2.md')">📄 n2.md</div>
-    
-    <div class="level-2" style="padding-left:30px;">📂 speech</div>
-    <div class="menu-item level-3" onclick="loadDoc('englishnote/speech/n1.md')">📄 n1.md</div>
+    <div>
+        <div class="folder-header" onclick="toggleFolder(this)">
+            <span class="arrow">▼</span> 📂 englishnote
+        </div>
+        <div class="submenu">
+            <div class="folder-header" style="padding-left: 45px;" onclick="toggleFolder(this)">
+                <span class="arrow">▼</span> 📁 grammar
+            </div>
+            <div class="submenu">
+                <div class="file-link" onclick="loadDoc('englishnote/grammar/n2.md', this)">📄 n2.md</div>
+            </div>
+
+            <div class="folder-header" style="padding-left: 45px;" onclick="toggleFolder(this)">
+                <span class="arrow">▼</span> 📁 speech
+            </div>
+            <div class="submenu">
+                <div class="file-link" onclick="loadDoc('englishnote/speech/n1.md', this)">📄 n1.md</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="content">
-    <div id="markdown-body">请选择一个文件查看内容</div>
+    <div id="markdown-body">
+        <h1>欢迎使用笔记系统</h1>
+        <p>请点击左侧菜单开始阅读...</p>
+    </div>
 </div>
 
 <script>
-    async function loadDoc(filePath) {
+    // 折叠/展开功能
+    function toggleFolder(element) {
+        element.classList.toggle('collapsed');
+    }
+
+    // 加载文档功能
+    async function loadDoc(filePath, element) {
+        // 高亮当前选中的菜单
+        document.querySelectorAll('.file-link').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+
         const contentDiv = document.getElementById('markdown-body');
-        contentDiv.innerHTML = "加载中...";
+        contentDiv.innerHTML = "<p style='color: #999;'>正在努力加载中...</p>";
         
         try {
+            // 注意：这里需要你的 GitHub Pages 上确实有这些路径的文件
             const response = await fetch(filePath);
-            if (!response.ok) throw new Error('文件不存在');
+            if (!response.ok) throw new Error('找不到该笔记文件 (404)');
             const text = await response.text();
-            // 使用 marked.js 将 md 转为 html
+            
+            // 渲染 Markdown
             contentDiv.innerHTML = marked.parse(text);
         } catch (err) {
-            contentDiv.innerHTML = "<span style='color:red;'>错误: " + err.message + "</span>";
+            contentDiv.innerHTML = `
+                <div style="color:#dc3545; padding: 20px; border: 1px solid #f5c6cb; background: #f8d7da; border-radius: 5px;">
+                    <strong>加载失败：</strong> ${err.message}<br>
+                    <small>请检查文件路径是否正确：${filePath}</small>
+                </div>`;
         }
     }
 </script>
