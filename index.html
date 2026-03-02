@@ -7,127 +7,172 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
-            --sidebar-bg: #f8f9fa;
-            --sidebar-hover: #e9ecef;
+            /* 强制明亮配色方案 */
+            --sidebar-bg: #ffffff; 
+            --sidebar-hover: #f0f2f5;
             --accent-color: #007bff;
-            --text-main: #333;
-            --border-color: #dee2e6;
+            --text-main: #2c3e50;
+            --text-muted: #6c757d;
+            --border-color: #eaecef;
         }
 
-        body { display: flex; margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; height: 100vh; color: var(--text-main); }
+        body { 
+            display: flex; 
+            margin: 0; 
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; 
+            height: 100vh; 
+            background-color: #fff;
+            color: var(--text-main);
+        }
 
-        /* 左侧菜单栏 */
+        /* --- 左侧菜单栏 --- */
         #sidebar { 
-            width: 280px; 
-            background: var(--sidebar-bg); 
+            width: 300px; 
+            background: var(--sidebar-bg) !important; /* 使用 important 确保覆盖 */
             border-right: 1px solid var(--border-color);
-            padding: 20px 0; 
             overflow-y: auto;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        .logo { padding: 0 25px 20px; font-size: 1.2rem; font-weight: bold; color: var(--accent-color); border-bottom: 1px solid var(--border-color); margin-bottom: 10px; }
+        .logo { 
+            padding: 30px 25px; 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            color: var(--accent-color); 
+            letter-spacing: 1px;
+        }
 
+        /* 文件夹标题：增加上下间距 */
         .folder-header { 
-            padding: 10px 25px; 
+            padding: 15px 25px; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
-            font-weight: 500;
-            transition: background 0.2s;
+            font-weight: 600;
+            user-select: none;
+            transition: all 0.2s;
+            border-radius: 8px;
+            margin: 2px 10px;
         }
         .folder-header:hover { background: var(--sidebar-hover); }
         
-        /* 旋转箭头指示器 */
-        .arrow { margin-right: 8px; transition: transform 0.2s; font-size: 0.8em; }
+        /* 箭头符号 */
+        .arrow { 
+            display: inline-block;
+            margin-right: 10px; 
+            transition: transform 0.3s; 
+            font-size: 0.7em;
+            color: var(--text-muted);
+        }
+        /* 当父级有 .collapsed 类时，旋转箭头并隐藏子菜单 */
         .collapsed .arrow { transform: rotate(-90deg); }
 
-        /* 子菜单容器 */
-        .submenu { overflow: hidden; transition: max-height 0.3s ease-out; }
-        .collapsed + .submenu { display: none; }
+        /* 子菜单容器：核心折叠逻辑 */
+        .submenu { 
+            display: block; /* 默认展开 */
+        }
+        .collapsed + .submenu { 
+            display: none; /* 隐藏 */
+        }
 
+        /* 文件链接：增加上下间距 */
         .file-link { 
-            padding: 8px 25px 8px 45px; 
+            padding: 12px 25px 12px 55px; 
             cursor: pointer; 
             font-size: 0.95em; 
-            color: #555;
+            color: var(--text-muted);
             display: block;
+            margin: 2px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
         }
         .file-link:hover { background: var(--sidebar-hover); color: var(--accent-color); }
-        .file-link.active { background: #e7f1ff; color: var(--accent-color); border-right: 3px solid var(--accent-color); }
+        .file-link.active { 
+            background: #eef6ff; 
+            color: var(--accent-color); 
+            font-weight: 600;
+        }
 
-        /* 右侧内容区 */
-        #content { flex: 1; padding: 40px 60px; overflow-y: auto; background: #fff; }
-        #markdown-body { max-width: 800px; margin: 0 auto; line-height: 1.7; }
+        /* --- 右侧内容区 --- */
+        #content { 
+            flex: 1; 
+            padding: 60px; 
+            overflow-y: auto; 
+            background: #fff;
+        }
+        #markdown-body { 
+            max-width: 850px; 
+            margin: 0 auto; 
+            line-height: 2; /* 增加行高，让文字更稀疏舒适 */
+            font-size: 1.1rem;
+        }
         
-        /* Markdown 样式微调 */
-        #markdown-body h1 { border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
-        #markdown-body code { background: #f3f3f3; padding: 2px 4px; border-radius: 4px; }
+        /* Markdown 里的列表和段落间距 */
+        #markdown-body p, #markdown-body li { margin-bottom: 1.5em; }
+        #markdown-body h1, #markdown-body h2 { margin-top: 2em; padding-bottom: 0.5em; border-bottom: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
 
 <div id="sidebar">
-    <div class="logo">📘 YINGNOTES</div>
+    <div class="logo">YINGNOTES</div>
     
-    <div>
+    <div class="menu-group">
         <div class="folder-header" onclick="toggleFolder(this)">
             <span class="arrow">▼</span> 📂 englishnote
         </div>
         <div class="submenu">
-            <div class="folder-header" style="padding-left: 45px;" onclick="toggleFolder(this)">
+            
+            <div class="folder-header" style="padding-left: 40px;" onclick="toggleFolder(this)">
                 <span class="arrow">▼</span> 📁 grammar
             </div>
             <div class="submenu">
                 <div class="file-link" onclick="loadDoc('englishnote/grammar/n2.md', this)">📄 n2.md</div>
             </div>
 
-            <div class="folder-header" style="padding-left: 45px;" onclick="toggleFolder(this)">
+            <div class="folder-header" style="padding-left: 40px;" onclick="toggleFolder(this)">
                 <span class="arrow">▼</span> 📁 speech
             </div>
             <div class="submenu">
                 <div class="file-link" onclick="loadDoc('englishnote/speech/n1.md', this)">📄 n1.md</div>
             </div>
+
         </div>
     </div>
 </div>
 
 <div id="content">
-    <div id="markdown-body">
-        <h1>欢迎使用笔记系统</h1>
-        <p>请点击左侧菜单开始阅读...</p>
-    </div>
+    <article id="markdown-body">
+        <h1>请选择笔记</h1>
+        <p>从左侧目录中点击对应的文件进行查看。</p>
+    </article>
 </div>
 
 <script>
-    // 折叠/展开功能
+    // 改进后的折叠功能：点击标题，给标题本身切换 'collapsed' 类
     function toggleFolder(element) {
         element.classList.toggle('collapsed');
     }
 
-    // 加载文档功能
     async function loadDoc(filePath, element) {
-        // 高亮当前选中的菜单
+        // 防止点击文件夹标题时触发加载（本代码已分离，此为保险）
+        event.stopPropagation();
+
         document.querySelectorAll('.file-link').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
 
         const contentDiv = document.getElementById('markdown-body');
-        contentDiv.innerHTML = "<p style='color: #999;'>正在努力加载中...</p>";
+        contentDiv.innerHTML = "<p style='color: #999;'>加载中...</p>";
         
         try {
-            // 注意：这里需要你的 GitHub Pages 上确实有这些路径的文件
             const response = await fetch(filePath);
-            if (!response.ok) throw new Error('找不到该笔记文件 (404)');
+            if (!response.ok) throw new Error('文件加载失败');
             const text = await response.text();
-            
-            // 渲染 Markdown
             contentDiv.innerHTML = marked.parse(text);
         } catch (err) {
-            contentDiv.innerHTML = `
-                <div style="color:#dc3545; padding: 20px; border: 1px solid #f5c6cb; background: #f8d7da; border-radius: 5px;">
-                    <strong>加载失败：</strong> ${err.message}<br>
-                    <small>请检查文件路径是否正确：${filePath}</small>
-                </div>`;
+            contentDiv.innerHTML = `<p style="color:red">错误: ${err.message}</p>`;
         }
     }
 </script>

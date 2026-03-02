@@ -6,5 +6,8 @@
 * [点击查看语法笔记 - n2](englishnote/grammar/n2.md)
 * [点击查看词汇笔记 - n1](englishnote/speech/n1.md)
 
+### 网站地址
+https://aidemengsite.github.io/YingNotes/
+
 ---
 *保持学习，每天进步一点点。*
