@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YingNotes | 个人笔记</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <style>
         :root {
             /* 强制明亮配色方案 */
@@ -162,7 +166,7 @@
 </div>
 
 <div id="content">
-    <article id="markdown-body">
+    <article id="markdown-body" class="markdown-body">
         <h1>请选择笔记</h1>
         <p>从左侧目录中点击对应的文件进行查看。</p>
     </article>
@@ -189,6 +193,9 @@
             if (!response.ok) throw new Error('文件加载失败');
             const text = await response.text();
             contentDiv.innerHTML = marked.parse(text);
+
+            // --- 新增：手动触发代码高亮 ---
+            // Prism.highlightAllUnder(contentDiv);
         } catch (err) {
             contentDiv.innerHTML = `<p style="color:red">错误: ${err.message}</p>`;
         }
