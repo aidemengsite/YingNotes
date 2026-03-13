@@ -121,47 +121,6 @@
 <body>
 
 <div id="sidebar">
-    <!-- <div class="logo">YINGNOTES</div>
-    
-    <div class="menu-group">
-        <div class="folder-header" onclick="toggleFolder(this)">
-            <span class="arrow">▼</span> 📂 englishnote
-        </div>
-        <div class="submenu">
-            
-            <div class="folder-header" style="padding-left: 40px;" onclick="toggleFolder(this)">
-                <span class="arrow">▼</span> 📁 grammar
-            </div>
-            <div class="submenu">
-                <div class="file-link" onclick="loadDoc('englishnote/grammar/n2.md', this)">📄 n2.md</div>
-            </div>
-
-            <div class="folder-header" style="padding-left: 40px;" onclick="toggleFolder(this)">
-                <span class="arrow">▼</span> 📁 speech
-            </div>
-            <div class="submenu">
-                <div class="file-link" onclick="loadDoc('englishnote/speech/n1.md', this)">📄 n1.md</div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="logo">Opencv</div>
-    <div class="menu-group">
-        <div class="folder-header" onclick="toggleFolder(this)">
-            <span class="arrow">▼</span> 📂 opencv1
-        </div>
-        <div class="submenu">
-            
-            <div class="folder-header" style="padding-left: 40px;" onclick="toggleFolder(this)">
-                <span class="arrow">▼</span> 📁 opencv2
-            </div>
-            <div class="submenu">
-                <div class="file-link" onclick="loadDoc('opencv/n1.md', this)">📄 n2.md</div>
-            </div>
-
-        </div>
-    </div> -->
 
 </div>
 
@@ -271,6 +230,20 @@
         try {
             const response = await fetch(fileUrl);
             const text = await response.text();
+
+            //图片路径转换
+            const baseUrl = fileUrl.substring(0, fileUrl.lastIndexOf('/') + 1);
+            const renderer = new marked.Renderer();
+            renderer.image = function(href, title, text) {
+                // 如果是相对路径 (不以 http 开头)，则拼接 baseUrl
+                if (!href.startsWith('http')) {
+                    // 移除路径开头的 ./ 
+                    const cleanHref = href.startsWith('./') ? href.substring(2) : href;
+                    href = baseUrl + cleanHref;
+                }
+                return `<img src="${href}" alt="${text}" title="${title || ''}" style="max-width:100%; border-radius:8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">`;
+            };
+
             contentDiv.innerHTML = marked.parse(text);
             Prism.highlightAllUnder(contentDiv);
         } catch (err) {
